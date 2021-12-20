@@ -164,7 +164,7 @@ class TestFromNumpyDynotears:
         sm_inter_edges = [el for el in sm.edges if "lag0" not in el[0]]
         sm_intra_edges = [el for el in sm.edges if "lag0" in el[0]]
 
-        assert len([el for el in sm_intra_edges if el not in w_edges]) == 0
+        assert not [el for el in sm_intra_edges if el not in w_edges]
         assert (
             len([el for el in w_edges if el not in sm_intra_edges]) / len(w_edges)
             <= 1.0
@@ -453,7 +453,7 @@ class TestFromPandasDynotears:
         sm_inter_edges = [el for el in sm.edges if "lag0" not in el[0]]
         sm_intra_edges = [el for el in sm.edges if "lag0" in el[0]]
 
-        assert len([el for el in sm_intra_edges if el not in w_edges]) == 0
+        assert not [el for el in sm_intra_edges if el not in w_edges]
         assert (
             len([el for el in w_edges if el not in sm_intra_edges]) / len(w_edges)
             <= 1.0

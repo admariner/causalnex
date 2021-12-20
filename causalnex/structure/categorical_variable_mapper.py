@@ -275,7 +275,9 @@ def validate_schema(
         ValueError: for unknown data type
         ValueError: for missing cardinality for categorical variables
     """
-    if not any(x in default_type for x in VariableFeatureMapper.PERMISSIBLE_TYPES):
+    if all(
+        x not in default_type for x in VariableFeatureMapper.PERMISSIBLE_TYPES
+    ):
         permissible_str = ", ".join(VariableFeatureMapper.PERMISSIBLE_TYPES)
         raise ValueError(
             f"Unknown default data type. Supported data types are {permissible_str}"

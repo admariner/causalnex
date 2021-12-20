@@ -506,8 +506,7 @@ def _generate_inter_structure(
     for i in cols:
         df.loc[i, :] = 0
 
-    g_inter = StructureModel(df)
-    return g_inter
+    return StructureModel(df)
 
 
 def generate_dataframe_dynamic(  # pylint: disable=R0914

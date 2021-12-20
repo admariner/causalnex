@@ -286,9 +286,8 @@ class BayesianNetworkClassifier(BaseEstimator, ClassifierMixin):
 
         X = self._discretise_features(X)
 
-        if self.return_prob:
-            pred = self.bn.predict_probability(X, self._target_name)
-        else:
-            pred = self.bn.predict(X, self._target_name).to_numpy().reshape(-1)
-
-        return pred
+        return (
+            self.bn.predict_probability(X, self._target_name)
+            if self.return_prob
+            else self.bn.predict(X, self._target_name).to_numpy().reshape(-1)
+        )

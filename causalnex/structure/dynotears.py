@@ -124,8 +124,9 @@ def from_pandas_dynamic(  # pylint: disable=too-many-arguments
 
     sm = StructureModel()
     sm.add_nodes_from(
-        [f"{var}_lag{l_val}" for var in col_idx.keys() for l_val in range(p + 1)]
+        [f"{var}_lag{l_val}" for var in col_idx for l_val in range(p + 1)]
     )
+
     sm.add_weighted_edges_from(
         [
             (
@@ -248,8 +249,7 @@ def from_numpy_dynamic(  # pylint: disable=too-many-arguments
 
     w_est[np.abs(w_est) < w_threshold] = 0
     a_est[np.abs(a_est) < w_threshold] = 0
-    sm = _matrices_to_structure_model(w_est, a_est)
-    return sm
+    return _matrices_to_structure_model(w_est, a_est)
 
 
 def _matrices_to_structure_model(

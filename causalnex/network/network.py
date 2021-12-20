@@ -361,7 +361,7 @@ class BayesianNetwork:
             ValueError: if nodes have not been fit, or if column names do not match node names.
         """
         df.is_copy = False
-        cols = nodes if nodes else df.columns
+        cols = nodes or df.columns
 
         for col in cols:
             df[col] = df[col].map(self._node_states[col])
@@ -724,15 +724,10 @@ class BayesianNetwork:
             transformed_data
         )  # type: pd.DataFrame
 
-        # keep only probabilities for the node we are interested in
-        cols = []
         pattern = re.compile(f"^{node}_[0-9]+$")
 
-        # disabled open pylint issue (https://github.com/PyCQA/pylint/issues/2962)
-        for col in probability.columns:
-            if pattern.match(col):
-                cols.append(col)
-
+        # keep only probabilities for the node we are interested in
+        cols = [col for col in probability.columns if pattern.match(col)]
         probability = probability[cols]
         probability.columns = cols
         return probability

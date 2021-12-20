@@ -97,9 +97,9 @@ class AbstractSupervisedDiscretiserMethod(BaseEstimator, ABC):
         Returns:
             discretised version of the input data
         """
-        outputs = {}
-        for col in data.columns:
-            outputs[col] = self._transform_one_column(data[[col]])
+        outputs = {
+            col: self._transform_one_column(data[[col]]) for col in data.columns
+        }
 
         transformed_df = pd.DataFrame.from_dict(outputs)
 

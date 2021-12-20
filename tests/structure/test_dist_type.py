@@ -93,7 +93,7 @@ class TestDistTypeClasses:
         loss = 0.0
         with torch.no_grad():
             for dt in dist_types:
-                loss = loss + dt.loss(X, X_hat)
+                loss += dt.loss(X, X_hat)
 
         assert isinstance(loss, torch.Tensor)
         assert loss.shape == torch.Size([])
@@ -342,9 +342,9 @@ class TestDistTypeClasses:
         for dt in dist_types:
             idx_col_new = dt.update_idx_col(idx_col_new)
 
-        for idx in idx_col_original.keys():
+        for idx, value in idx_col_original.items():
             # ensure that all original columns exist
-            assert idx_col_original[idx] == idx_col_new[idx]
+            assert value == idx_col_new[idx]
 
 
 class TestDistTypeNotears:

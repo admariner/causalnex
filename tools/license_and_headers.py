@@ -69,7 +69,7 @@ def files_at_path(path: str):
     return [
         fn
         for fn in glob.glob(path + "/**/*.py", recursive=True)
-        if not ("ebaybbn" in fn or "structure/notears.py" in fn)
+        if "ebaybbn" not in fn and "structure/notears.py" not in fn
     ]
 
 

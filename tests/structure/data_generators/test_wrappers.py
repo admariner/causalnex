@@ -65,9 +65,11 @@ def graph_gen():
         np.random.seed(seed)
 
         sm = StructureModel()
-        nodes = list(
-            "".join(x) for x in product(string.ascii_lowercase, string.ascii_lowercase)
-        )[:num_nodes]
+        nodes = [
+            "".join(x)
+            for x in product(string.ascii_lowercase, string.ascii_lowercase)
+        ][:num_nodes]
+
         np.random.shuffle(nodes)
         sm.add_nodes_from(nodes)
 

@@ -130,8 +130,7 @@ def generate_structure(
     edge_weights[np.random.rand(num_nodes, num_nodes) < 0.5] *= -1
 
     adj_matrix = (edge_flags != 0).astype(float) * edge_weights
-    graph = StructureModel(adj_matrix)
-    return graph
+    return StructureModel(adj_matrix)
 
 
 def sem_generator(
@@ -545,7 +544,7 @@ def _create_weight_matrix(
                 w_mat[ix_mask_array] = np.random.uniform(
                     -np.sqrt(12) / 2, np.sqrt(12) / 2, size=(len(ix_from), len(ix_to))
                 )
-            elif weight_distribution in ("gaussian", "normal"):
+            elif weight_distribution in {"gaussian", "normal"}:
                 w_mat[ix_mask_array] = np.random.normal(
                     loc=0, scale=1, size=(len(ix_from), len(ix_to))
                 )
@@ -554,33 +553,33 @@ def _create_weight_matrix(
                     "weight", intercept_distribution, ["uniform", "gaussian", "normal"]
                 )
 
-        else:
-            if n_weights == 1:
-                w_mat[ix_mask_array] = weight
-            elif n_weights > 1:
-                # assign weight randomly to a category (through the
-                # normalization, this affects all categories from or to)
-                sparse_mask = np.random.uniform(size=(len(ix_from), len(ix_to)))
-                sparse_mask = (sparse_mask == np.min(sparse_mask)).astype(int)
-                w_mat[ix_mask_array] = sparse_mask * weight
-    if intercept:
-        if intercept_distribution == "uniform":
+        elif n_weights == 1:
+            w_mat[ix_mask_array] = weight
+        elif n_weights > 1:
+            # assign weight randomly to a category (through the
+            # normalization, this affects all categories from or to)
+            sparse_mask = np.random.uniform(size=(len(ix_from), len(ix_to)))
+            sparse_mask = (sparse_mask == np.min(sparse_mask)).astype(int)
+            w_mat[ix_mask_array] = sparse_mask * weight
+    if intercept_distribution == "uniform":
+        if intercept:
             # zero mean, unit variance:
             w_mat[-1, :] = np.random.uniform(
                 -np.sqrt(12) / 2, np.sqrt(12) / 2, size=[1, n_columns]
             )
-        elif intercept_distribution in ("gaussian", "normal"):
+    elif intercept_distribution in {"gaussian", "normal"}:
+        if intercept:
             w_mat[-1, :] = np.random.normal(loc=0, scale=1, size=[1, n_columns])
-        else:
-            _raise_dist_error(
-                "intercept", intercept_distribution, ["uniform", "gaussian", "normal"]
-            )
+    elif intercept:
+        _raise_dist_error(
+            "intercept", intercept_distribution, ["uniform", "gaussian", "normal"]
+        )
 
     return w_mat
 
 
 def _raise_dist_error(name: str, dist: str, dist_options):
-    valid_dists = ", ".join(valid_dist for valid_dist in dist_options)
+    valid_dists = ", ".join(dist_options)
     raise ValueError(
         f"Unknown {name} distribution {dist}, valid distributions are {valid_dists}"
     )

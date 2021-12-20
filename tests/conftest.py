@@ -208,8 +208,7 @@ def train_data() -> pd.DataFrame:
         ["a", "z", 59.61068083691302, False, True],
     ]
 
-    data = pd.DataFrame(data_arr, columns=["a", "b", "c", "d", "e"])
-    return data
+    return pd.DataFrame(data_arr, columns=["a", "b", "c", "d", "e"])
 
 
 @pytest.fixture
@@ -413,15 +412,13 @@ def create_marginals(cpds, data_vals):
     )
     p_c = dict(enumerate((c_c * cpd_c).sum(axis=1)))
 
-    marginals = {
+    return {
         "a": {data_vals["a"][k]: v for k, v in p_a.items()},
         "b": {data_vals["b"][k]: v for k, v in p_b.items()},
         "c": {data_vals["c"][k]: v for k, v in p_c.items()},
         "d": {data_vals["d"][k]: v for k, v in p_d.items()},
         "e": {data_vals["e"][k]: v for k, v in p_e.items()},
     }
-
-    return marginals
 
 
 @pytest.fixture
@@ -446,8 +443,7 @@ def test_data_c() -> pd.DataFrame:
         ["b", "z", 0, True, True],
     ]
 
-    data = pd.DataFrame(data_arr, columns=["a", "b", "c", "d", "e"])
-    return data
+    return pd.DataFrame(data_arr, columns=["a", "b", "c", "d", "e"])
 
 
 @pytest.fixture
@@ -472,8 +468,7 @@ def test_data_c_likelihood(train_data_discrete_cpds) -> pd.DataFrame:
         for x in range(len(train_data_discrete_cpds["c"][0]))
     ]
 
-    likelihood = pd.DataFrame(data_arr, columns=["c_0", "c_1", "c_2", "c_3", "c_4"])
-    return likelihood
+    return pd.DataFrame(data_arr, columns=["c_0", "c_1", "c_2", "c_3", "c_4"])
 
 
 @pytest.fixture
@@ -531,7 +526,7 @@ def data_dynotears_p1() -> Dict[str, np.ndarray]:
     Returns:
         dictionary with keys W (intra-weights), A (inter-weights), X and Y (inputs of from_numpy_dynamic)
     """
-    data = {
+    return {
         "W": np.array(
             [
                 [0.0, -0.55, 0.0, 1.48, 0.0],
@@ -659,7 +654,6 @@ def data_dynotears_p1() -> Dict[str, np.ndarray]:
             ]
         ),
     }
-    return data
 
 
 @pytest.fixture()
@@ -682,7 +676,7 @@ def data_dynotears_p2() -> Dict[str, np.ndarray]:
     Returns:
         dictionary with keys W (intra-weights) ,A (inter-weights), X and Y (inputs of from_numpy_dynamic)
     """
-    data = {
+    return {
         "W": np.array(
             [
                 [0.0, 0.0, 0.0, 0.0, -1.08],
@@ -815,7 +809,6 @@ def data_dynotears_p2() -> Dict[str, np.ndarray]:
             ]
         ),
     }
-    return data
 
 
 @pytest.fixture()
@@ -1043,7 +1036,7 @@ def adjacency_mat_num_stability() -> np.ndarray:
     """
     Adjacency matrix for training structure learning algorithms
     """
-    W = np.array(
+    return np.array(
         [
             [0.0, 0.0, 0.0, 0.0, 0.0],
             [-0.6, 0.0, 0.0, 0.0, 1.27],
@@ -1052,7 +1045,6 @@ def adjacency_mat_num_stability() -> np.ndarray:
             [1.74, 0.0, 0.0, 0.0, 0.0],
         ]
     )
-    return W
 
 
 @pytest.fixture
@@ -1076,7 +1068,7 @@ def iris_edge_list():
     """
     Edge list to construct bayesian network for iris data
     """
-    edge_list = [
+    return [
         ("sepal width (cm)", "sepal length (cm)"),
         ("petal length (cm)", "sepal length (cm)"),
         ("petal length (cm)", "sepal width (cm)"),
@@ -1084,7 +1076,6 @@ def iris_edge_list():
         ("type", "sepal width (cm)"),
         ("type", "petal width (cm)"),
     ]
-    return edge_list
 
 
 @pytest.fixture

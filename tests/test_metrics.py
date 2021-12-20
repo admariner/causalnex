@@ -198,22 +198,39 @@ class TestROCAUCStates:
 
         # equal class (c) weighting to guarantee high ROC expected
         train = pd.DataFrame(
-            [[a, b, 0] for a in range(0, 2) for b in range(0, 2) for _ in range(10)]
-            + [
-                [a, b, 1]
-                for a in range(0, 2)
-                for b in range(0, 2)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [
-                [a, b, 0]
-                for a in range(2, 4)
-                for b in range(2, 4)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [[a, b, 1] for a in range(2, 4) for b in range(2, 4) for _ in range(10)],
+            (
+                (
+                    (
+                        [
+                            [a, b, 0]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(10)
+                        ]
+                        + [
+                            [a, b, 1]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(a * 10 + b * 10 + 1000)
+                        ]
+                    )
+                    + [
+                        [a, b, 0]
+                        for a in range(2, 4)
+                        for b in range(2, 4)
+                        for _ in range(a * 10 + b * 10 + 1000)
+                    ]
+                )
+                + [
+                    [a, b, 1]
+                    for a in range(2, 4)
+                    for b in range(2, 4)
+                    for _ in range(10)
+                ]
+            ),
             columns=["a", "b", "c"],
         )
+
 
         cg = StructureModel()
         cg.add_weighted_edges_from([("a", "c", 1), ("b", "c", 1)])
@@ -230,22 +247,39 @@ class TestROCAUCStates:
 
         # equal class (c) weighting to guarantee high ROC expected
         train = pd.DataFrame(
-            [[a, b, 0] for a in range(0, 2) for b in range(0, 2) for _ in range(1)]
-            + [
-                [a, b, 1]
-                for a in range(0, 2)
-                for b in range(0, 2)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [
-                [a, b, 0]
-                for a in range(2, 4)
-                for b in range(2, 4)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [[a, b, 1] for a in range(2, 4) for b in range(2, 4) for _ in range(1)],
+            (
+                (
+                    (
+                        [
+                            [a, b, 0]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(1)
+                        ]
+                        + [
+                            [a, b, 1]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(a * 10 + b * 10 + 1000)
+                        ]
+                    )
+                    + [
+                        [a, b, 0]
+                        for a in range(2, 4)
+                        for b in range(2, 4)
+                        for _ in range(a * 10 + b * 10 + 1000)
+                    ]
+                )
+                + [
+                    [a, b, 1]
+                    for a in range(2, 4)
+                    for b in range(2, 4)
+                    for _ in range(1)
+                ]
+            ),
             columns=["a", "b", "c"],
         )
+
 
         cg = StructureModel()
         cg.add_weighted_edges_from([("a", "c", 1), ("b", "c", 1)])
@@ -262,22 +296,39 @@ class TestROCAUCStates:
 
         # equal class (c) weighting to guarantee high ROC expected
         train = pd.DataFrame(
-            [[a, b, 0] for a in range(0, 2) for b in range(0, 2) for _ in range(1)]
-            + [
-                [a, b, 1]
-                for a in range(0, 2)
-                for b in range(0, 2)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [
-                [a, b, 0]
-                for a in range(2, 4)
-                for b in range(2, 4)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [[a, b, 1] for a in range(2, 4) for b in range(2, 4) for _ in range(1)],
+            (
+                (
+                    (
+                        [
+                            [a, b, 0]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(1)
+                        ]
+                        + [
+                            [a, b, 1]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(a * 10 + b * 10 + 1000)
+                        ]
+                    )
+                    + [
+                        [a, b, 0]
+                        for a in range(2, 4)
+                        for b in range(2, 4)
+                        for _ in range(a * 10 + b * 10 + 1000)
+                    ]
+                )
+                + [
+                    [a, b, 1]
+                    for a in range(2, 4)
+                    for b in range(2, 4)
+                    for _ in range(1)
+                ]
+            ),
             columns=["a", "b", "c"],
         )
+
 
         test = train[train["c"] == 1]
         assert len(test["c"].unique()) == 1
@@ -296,22 +347,39 @@ class TestROCAUCStates:
         """Should be possible to compute auc for state with no parent nodes"""
 
         train = pd.DataFrame(
-            [[a, b, 0] for a in range(0, 2) for b in range(0, 2) for _ in range(1)]
-            + [
-                [a, b, 1]
-                for a in range(0, 2)
-                for b in range(0, 2)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [
-                [a, b, 0]
-                for a in range(2, 4)
-                for b in range(2, 4)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [[a, b, 1] for a in range(2, 4) for b in range(2, 4) for _ in range(1)],
+            (
+                (
+                    (
+                        [
+                            [a, b, 0]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(1)
+                        ]
+                        + [
+                            [a, b, 1]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(a * 10 + b * 10 + 1000)
+                        ]
+                    )
+                    + [
+                        [a, b, 0]
+                        for a in range(2, 4)
+                        for b in range(2, 4)
+                        for _ in range(a * 10 + b * 10 + 1000)
+                    ]
+                )
+                + [
+                    [a, b, 1]
+                    for a in range(2, 4)
+                    for b in range(2, 4)
+                    for _ in range(1)
+                ]
+            ),
             columns=["a", "b", "c"],
         )
+
 
         cg = StructureModel()
         cg.add_weighted_edges_from([("a", "c", 1), ("b", "c", 1)])
@@ -328,22 +396,39 @@ class TestROCAUCStates:
 
         # equal class (c) weighting to guarantee high ROC expected
         train = pd.DataFrame(
-            [[a, b, 0] for a in range(0, 2) for b in range(0, 2) for _ in range(1)]
-            + [
-                [a, b, 1]
-                for a in range(0, 2)
-                for b in range(0, 2)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [
-                [a, b, 0]
-                for a in range(2, 4)
-                for b in range(2, 4)
-                for _ in range(a * 10 + b * 10 + 1000)
-            ]
-            + [[a, b, 1] for a in range(2, 4) for b in range(2, 4) for _ in range(1)],
+            (
+                (
+                    (
+                        [
+                            [a, b, 0]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(1)
+                        ]
+                        + [
+                            [a, b, 1]
+                            for a in range(2)
+                            for b in range(2)
+                            for _ in range(a * 10 + b * 10 + 1000)
+                        ]
+                    )
+                    + [
+                        [a, b, 0]
+                        for a in range(2, 4)
+                        for b in range(2, 4)
+                        for _ in range(a * 10 + b * 10 + 1000)
+                    ]
+                )
+                + [
+                    [a, b, 1]
+                    for a in range(2, 4)
+                    for b in range(2, 4)
+                    for _ in range(1)
+                ]
+            ),
             columns=["a", "b", "c"],
         )
+
 
         # remap values in column c
         train["c"] = train["c"].map({0: "f", 1: "g"})

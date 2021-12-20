@@ -153,13 +153,10 @@ class DAGClassifier(ClassifierMixin, DAGBase):
 
     @property
     def _target_node_names(self) -> List[str]:
-        # target node names are build according to
-        target_nodes = []
-        for catidx in range(len(self.classes_)):
-            target_nodes.append(
-                DistTypeCategorical.make_node_name(self._target, catidx)
-            )
-        return target_nodes
+        return [
+            DistTypeCategorical.make_node_name(self._target, catidx)
+            for catidx in range(len(self.classes_))
+        ]
 
     @property
     def feature_importances_(self) -> np.ndarray:
@@ -178,10 +175,11 @@ class DAGClassifier(ClassifierMixin, DAGBase):
             )
 
         # handle categorical
-        data = []
-        for node in self._target_node_names:
-            # stack into (n_classes, n_features) format
-            data.append(np.asarray(self.get_edges_to_node(node).values).reshape(1, -1))
+        data = [
+            np.asarray(self.get_edges_to_node(node).values).reshape(1, -1)
+            for node in self._target_node_names
+        ]
+
         return np.vstack(data)
 
     @property
@@ -201,14 +199,9 @@ class DAGClassifier(ClassifierMixin, DAGBase):
             ).reshape(1, -1)
 
         # handle categorical
-        data = []
-        for node in self._target_node_names:
-            # get stack into (n_classes, n_features) format
-            data.append(
-                np.asarray(
+        data = [np.asarray(
                     self.get_edges_to_node(node, data="mean_effect").values
-                ).reshape(1, -1)
-            )
+                ).reshape(1, -1) for node in self._target_node_names]
         return np.vstack(data)
 
     @property

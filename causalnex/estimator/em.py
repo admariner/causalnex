@@ -405,19 +405,18 @@ class EMSingleLatentVariable:  # pylint: disable=too-many-arguments, too-many-in
                 for lv_value in lv_states:
                     index = lv_value if node == self.lv_name else node_value
                     idx_cols_counts.append((index, "", count))
-            else:
-                if node == self.lv_name:
-                    cols = tuple(record[j] for j in node_cpd.columns.names)
+            elif node == self.lv_name:
+                cols = tuple(record[j] for j in node_cpd.columns.names)
 
-                    for lv_value in lv_states:
-                        idx_cols_counts.append((lv_value, cols, count))
-                else:
-                    for lv_value in lv_states:
-                        cols = tuple(
-                            lv_value if j == self.lv_name else record[j]
-                            for j in node_cpd.columns.names
-                        )
-                        idx_cols_counts.append((node_value, cols, count))
+                for lv_value in lv_states:
+                    idx_cols_counts.append((lv_value, cols, count))
+            else:
+                for lv_value in lv_states:
+                    cols = tuple(
+                        lv_value if j == self.lv_name else record[j]
+                        for j in node_cpd.columns.names
+                    )
+                    idx_cols_counts.append((node_value, cols, count))
 
         return idx_cols_counts, mb_cols
 
@@ -541,7 +540,7 @@ class EMSingleLatentVariable:  # pylint: disable=too-many-arguments, too-many-in
         parents = list(sorted(sm.predecessors(node)))
         columns = [""]
 
-        if len(parents) > 0:
+        if parents:
             columns = pd.MultiIndex.from_product(
                 [sorted(node_states[p]) for p in parents],
                 names=parents,

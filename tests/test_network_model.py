@@ -161,7 +161,7 @@ class TestBayesianCPDs:
             return_prob=True,
         )
         clf.fit(df, label)
-        output = clf.predict(df.iloc[0:1])
+        output = clf.predict(df.iloc[:1])
         assert len(list(output)) == 3
         assert math.isclose(
             output["sepal length (cm)_0"].values, 0.764706, abs_tol=1e-3

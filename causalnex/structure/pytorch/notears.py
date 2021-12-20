@@ -120,13 +120,12 @@ def from_numpy(
     # Check array for NaN or inf values
     check_array(X)
 
-    if dist_type_schema is not None:
-
-        # make sure that there is one provided key per column
-        if set(range(X.shape[1])).symmetric_difference(set(dist_type_schema.keys())):
-            raise ValueError(
-                f"Difference indices and expected indices. Got {dist_type_schema} schema"
-            )
+    if dist_type_schema is not None and set(
+        range(X.shape[1])
+    ).symmetric_difference(set(dist_type_schema.keys())):
+        raise ValueError(
+            f"Difference indices and expected indices. Got {dist_type_schema} schema"
+        )
 
     # if dist_type_schema is None, assume all columns are continuous, else init the alias mapped object
     dist_types = (
@@ -150,13 +149,14 @@ def from_numpy(
     _, d = X.shape
 
     # if None or empty, convert into a list with single item
-    if hidden_layer_units is None:
+    if (
+        hidden_layer_units is None
+        or isinstance(hidden_layer_units, list)
+        and not hidden_layer_units
+    ):
         hidden_layer_units = [0]
-    elif isinstance(hidden_layer_units, list) and not hidden_layer_units:
-        hidden_layer_units = [0]
-
     # if no hidden layer units, still take 1 iteration step with bounds
-    hidden_layer_bnds = hidden_layer_units[0] if hidden_layer_units[0] else 1
+    hidden_layer_bnds = hidden_layer_units[0] or 1
 
     # Flip i and j because Pytorch flattens the vector in another direction
     bnds = [
@@ -204,9 +204,7 @@ def from_numpy(
     # set bias as node attribute
     bias = model.bias
     for node in sm.nodes():
-        value = None
-        if bias is not None:
-            value = bias[node]
+        value = bias[node] if bias is not None else None
         sm.nodes[node]["bias"] = value
 
     # attach each dist_type object to corresponding node(s)
