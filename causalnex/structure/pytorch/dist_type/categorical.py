@@ -103,9 +103,7 @@ class DistTypeCategorical(ExpandColumnsMixin, DistTypeBase):
 
         # update the idx_group with expanded columns
         if fit_transform:
-            self.idx_group = []
-            # preserve the first column location
-            self.idx_group.append(self.idx)
+            self.idx_group = [self.idx]
             # the new cols are appended to the end of X contiguously
             n_new_cols = expanded_columns.shape[1] - 1
             idx_start = X.shape[1] - n_new_cols
@@ -290,8 +288,10 @@ class DistTypeCategorical(ExpandColumnsMixin, DistTypeBase):
         Returns:
             Updated index to column mapping.
         """
-        new_idx_cols = {}
         colname = idx_col.pop(self.idx_group[0])
-        for catidx, idx in enumerate(self.idx_group):
-            new_idx_cols[idx] = self.make_node_name(colname, catidx)
+        new_idx_cols = {
+            idx: self.make_node_name(colname, catidx)
+            for catidx, idx in enumerate(self.idx_group)
+        }
+
         return {**idx_col, **new_idx_cols}

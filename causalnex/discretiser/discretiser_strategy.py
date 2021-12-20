@@ -190,7 +190,7 @@ class DecisionTreeSupervisedDiscretiserMethod(AbstractSupervisedDiscretiserMetho
                     if self.map_thresholds[feat].size == 0:
                         no_use.append(feat)
                         del self.map_thresholds[feat]
-                if len(no_use) > 0:
+                if no_use:
                     logging.warning(
                         "%s not selected by the decision tree. No discretisation thresholds were learned. "
                         "Consider setting split_unselected_feat = True or discretise them using single mode",

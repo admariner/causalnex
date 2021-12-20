@@ -55,7 +55,7 @@ def get_args(func):
     if hasattr(func, "argspec"):
         return func.argspec
     # return inspect.getargspec(func).args
-    return [p for p in inspect.signature(func).parameters]
+    return list(inspect.signature(func).parameters)
 
 
 def make_key(*args):

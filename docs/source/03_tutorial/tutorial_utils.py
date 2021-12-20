@@ -136,8 +136,9 @@ def plot_pretty_structure(
     # Customising edges
     if weighted:
         edge_weights = [
-            (u, v, w if w else default_weight) for u, v, w in g.edges(data="weight")
+            (u, v, w or default_weight) for u, v, w in g.edges(data="weight")
         ]
+
     else:
         edge_weights = [(u, v, default_weight) for u, v in g.edges()]
 

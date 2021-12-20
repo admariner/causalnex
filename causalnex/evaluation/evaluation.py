@@ -192,12 +192,10 @@ def classification_report(bn: BayesianNetwork, data: pd.DataFrame, node: str) ->
 
     labels = sorted(list(bn.node_states[node]))
     target_names = [f"{node}_{v}" for v in sorted(bn.node_states[node])]
-    report = metrics.classification_report(
+    return metrics.classification_report(
         y_true=data[node],
         y_pred=predictions,
         labels=labels,
         target_names=target_names,
         output_dict=True,
     )
-
-    return report

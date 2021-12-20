@@ -101,8 +101,7 @@ class BBN:
         return fh.getvalue()
 
     def build_join_tree(self):
-        jt = build_join_tree(self)
-        return jt
+        return build_join_tree(self)
 
     def validate_keyvals(self, **kwds):
         """
@@ -112,7 +111,7 @@ class BBN:
         and that all vals are in the domain of
         the variable
         """
-        vars = set([n.variable_name for n in self.nodes])
+        vars = {n.variable_name for n in self.nodes}
         for k, v in list(kwds.items()):
             if k not in vars:
                 raise VariableNotInGraphError(k)
@@ -202,8 +201,6 @@ class JoinTree(UndirectedGraph):
     def initialize_potentials(self, assignments, bbn, evidence={}):
         # Step 1, assign 1 to each cluster and sepset
         for node in self.nodes:
-            tt = {}
-
             vals = []
             variables = node.variable_names
             # Lets sort the variables here so that
@@ -214,8 +211,8 @@ class JoinTree(UndirectedGraph):
                 domain = bbn.domains.get(variable, [True, False])
                 vals.append(list(product([variable], domain)))
             permutations = product(*vals)
-            for permutation in permutations:
-                tt[permutation] = 1
+            tt = {permutation: 1 for permutation in permutations}
+
             node.potential_tt = tt
 
         # Step 2: Note that in H&D the assignments are
@@ -246,10 +243,7 @@ class JoinTree(UndirectedGraph):
                     # This is slightly different to
                     # the way that H&D do it.
 
-                    arg_list = []
-                    for arg_name in get_args(bbn_node.func):
-                        arg_list.append(argvals[arg_name])
-
+                    arg_list = [argvals[arg_name] for arg_name in get_args(bbn_node.func)]
                     potential *= bbn_node.func(*arg_list)
                 tt[permutation] = potential
             clique.potential_tt = tt
@@ -268,9 +262,11 @@ class JoinTree(UndirectedGraph):
                         # Encode the evidence in
                         # the clique potential...
                         for variable, value in k:
-                            if variable == node.variable_name:
-                                if value != evidence[variable]:
-                                    clique.potential_tt[k] = 0
+                            if (
+                                variable == node.variable_name
+                                and value != evidence[variable]
+                            ):
+                                clique.potential_tt[k] = 0
 
     def initial_likelihoods(self, assignments, bbn):
         # TODO: Since this is the same every time we should probably
@@ -288,24 +284,6 @@ class JoinTree(UndirectedGraph):
         assigned = set()
         for node in bbn.nodes:
             args = get_args(node.func)
-            if len(args) == 1:
-                # If the func has only 1 arg
-                # it means that it does not
-                # specify a conditional probability
-                # This is where H&D is a bit vague
-                # but it seems to imply that we
-                # do not assign it to any
-                # clique.
-                # Revising this for now as I dont
-                # think its correct, I think
-                # all CPTs need to be assigned
-                # once and once only. The example
-                # in H&D just happens to be a clique
-                # that f_a could have been assigned
-                # to but wasnt presumably because
-                # it got assigned somewhere else.
-                pass
-                # continue
             # Now we need to find a cluster that
             # is a superset of the Family(v)
             # Family(v) is defined by D&H to
@@ -421,16 +399,13 @@ class JoinTree(UndirectedGraph):
         # Note that for efficiency we
         # should probably have an index
         # cached in the bbn and/or the jt.
-        containing_nodes = []
+        containing_nodes = [
+            node
+            for node in self.clique_nodes
+            if bbn_node.name in [n.name for n in node.clique.nodes]
+        ]
 
-        for node in self.clique_nodes:
-            if bbn_node.name in [n.name for n in node.clique.nodes]:
-                containing_nodes.append(node)
-                # In theory it doesnt matter which one we
-                # use so we could bale out after we
-                # find the first one
-                # TODO: With some better indexing we could
-                # avoid searching for this node every time...
+
         clique_node = containing_nodes[0]
         tt = defaultdict(float)
         for k, v in list(clique_node.potential_tt.items()):
@@ -493,9 +468,7 @@ class JoinTreeCliqueNode(UndirectedNode):
     def variable_names(self):
         """Return the set of variable names
         that this clique represents"""
-        var_names = []
-        for node in self.clique.nodes:
-            var_names.append(node.variable_name)
+        var_names = [node.variable_name for node in self.clique.nodes]
         return sorted(var_names)
 
     @property
@@ -640,9 +613,7 @@ class SepSet(object):
         Y_trees = [t for t in forest if self.Y in [n.clique for n in t.clique_nodes]]
         assert len(X_trees) == 1
         assert len(Y_trees) == 1
-        if X_trees[0] is not Y_trees[0]:
-            return True
-        return False
+        return X_trees[0] is not Y_trees[0]
 
     def insert(self, forest):
         """Inserting this sepset into
@@ -797,9 +768,7 @@ def make_node_func(variable_name, conditions):
     argspec = [k[0] for k in key_]
 
     def node_func(*args):
-        key = []
-        for arg, val in zip(argspec, args):
-            key.append((arg, val))
+        key = list(zip(argspec, args))
         return tt[tuple(key)]
 
     node_func.argspec = argspec
@@ -837,8 +806,7 @@ def make_undirected_copy(dag):
             nodes[node.name].neighbours.append(nodes[parent.name])
             nodes[parent.name].neighbours.append(nodes[node.name])
 
-    g = UndirectedGraph(list(nodes.values()))
-    return g
+    return UndirectedGraph(list(nodes.values()))
 
 
 def make_moralized_copy(gu, dag):
@@ -891,7 +859,7 @@ def record_cliques(cliques, cluster):
     if it is not a subset of any clique
     already saved.
     Argument cluster must be a set"""
-    if any([cluster.issubset(c.nodes) for c in cliques]):
+    if any(cluster.issubset(c.nodes) for c in cliques):
         return
     cliques.append(Clique(cluster))
 
@@ -936,7 +904,7 @@ def triangulate(gm, priority_func=priority_func):
                 # Now also add this new arc to gm...
                 gmnodes[node_b.name].neighbours.append(gmnodes[node_a.name])
                 gmnodes[node_a.name].neighbours.append(gmnodes[node_b.name])
-        gmcluster = set([gmnodes[c.name] for c in cluster])
+        gmcluster = {gmnodes[c.name] for c in cluster}
         record_cliques(cliques, gmcluster)
         # Now we need to remove v from gm_...
         # This means we also have to remove it from all
@@ -986,10 +954,12 @@ def build_join_tree(dag, clique_priority_func=priority_func):
         forest.add(tree)
 
     # Initialize the SepSets
-    S = set()  # track the sepsets
-    for X, Y in combinations(cliques, 2):
-        if X.nodes.intersection(Y.nodes):
-            S.add(SepSet(X, Y))
+    S = {
+        SepSet(X, Y)
+        for X, Y in combinations(cliques, 2)
+        if X.nodes.intersection(Y.nodes)
+    }
+
     sepsets_inserted = 0
     while sepsets_inserted < (len(cliques) - 1):
         # Adding in name to make this sort deterministic
@@ -1005,5 +975,4 @@ def build_join_tree(dag, clique_priority_func=priority_func):
                 break
 
     assert len(forest) == 1
-    jt = list(forest)[0]
-    return jt
+    return list(forest)[0]

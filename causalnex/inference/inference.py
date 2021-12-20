@@ -213,7 +213,7 @@ class InferenceEngine:
                 "The cpd for the provided observation must be between 0 and 1"
             )
 
-        if not set(state.keys()) == set(self._cpds_original[observation]):
+        if set(state.keys()) != set(self._cpds_original[observation]):
             expected = set(self._cpds_original[observation])
             found = set(state.keys())
             raise ValueError(
@@ -243,8 +243,8 @@ class InferenceEngine:
         Raises:
             ValueError: if performing intervention would create an isolated node.
         """
-        if not any(
-            node in inspect.getargs(f.__code__)[0][1:]
+        if all(
+            node not in inspect.getargs(f.__code__)[0][1:]
             for _, f in self._node_functions.items()
         ):
             raise ValueError(

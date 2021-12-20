@@ -65,8 +65,11 @@ def sprinkler_graph():
     rain.parents = [cloudy]
     rain.children = [wet_grass]
     wet_grass.parents = [sprinkler, rain]
-    bbn = BBN(dict(cloudy=cloudy, sprinkler=sprinkler, rain=rain, wet_grass=wet_grass))
-    return bbn
+    return BBN(
+        dict(
+            cloudy=cloudy, sprinkler=sprinkler, rain=rain, wet_grass=wet_grass
+        )
+    )
 
 
 @pytest.fixture
@@ -88,15 +91,17 @@ def sprinkler_bbn():
         return sprinkler_dict[(rain, sprinkler)]
 
     def f_grass_wet(sprinkler, rain, grass_wet):
-        table = {}
-        table["fft"] = 0.0
-        table["fff"] = 1.0
-        table["ftt"] = 0.8
-        table["ftf"] = 0.2
-        table["tft"] = 0.9
-        table["tff"] = 0.1
-        table["ttt"] = 0.99
-        table["ttf"] = 0.01
+        table = {
+            'fft': 0.0,
+            'fff': 1.0,
+            'ftt': 0.8,
+            'ftf': 0.2,
+            'tft': 0.9,
+            'tff': 0.1,
+            'ttt': 0.99,
+            'ttf': 0.01,
+        }
+
         return table[make_key(sprinkler, rain, grass_wet)]
 
     return build_bbn(f_rain, f_sprinkler, f_grass_wet)
@@ -107,8 +112,6 @@ def huang_darwiche_nodes():
     """The nodes for the Huang Darwich example"""
 
     def f_a(a):
-        if a:
-            return 1 / 2
         return 1 / 2
 
     def f_b(a, b):
@@ -172,9 +175,7 @@ def huang_darwiche_moralized(huang_darwiche_dag):
 
     dag = huang_darwiche_dag
     gu = make_undirected_copy(dag)
-    gm = make_moralized_copy(gu, dag)
-
-    return gm
+    return make_moralized_copy(gu, dag)
 
 
 @pytest.fixture

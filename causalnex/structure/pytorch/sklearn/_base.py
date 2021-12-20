@@ -388,9 +388,7 @@ class DAGBase(
             "all_node_attributes": NODE_STYLE.WEAK,
             "all_edge_attributes": EDGE_STYLE.WEAK,
         }
-        plt_kwargs = (
-            plot_structure_kwargs if plot_structure_kwargs else plt_kwargs_default
-        )
+        plt_kwargs = plot_structure_kwargs or plt_kwargs_default
         prog = plt_kwargs.get("prog", "neato")
 
         with warnings.catch_warnings():
@@ -399,7 +397,7 @@ class DAGBase(
             # get pygraphviz plot:
             viz = plot_structure(graph, **plt_kwargs)
 
-        if use_mpl is True:
+        if use_mpl:
             return display_plot_mpl(
                 viz=viz, prog=prog, ax=ax, pixel_size_in=pixel_size_in
             )

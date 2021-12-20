@@ -135,8 +135,7 @@ class DynamicDataTransformer(BaseEstimator, TransformerMixin):
         )
 
         if self.return_df:
-            res = self._concat_lags(X, Xlags)
-            return res
+            return self._concat_lags(X, Xlags)
         return X, Xlags
 
     def _concat_lags(self, X: np.ndarray, Xlags: np.ndarray) -> pd.DataFrame:

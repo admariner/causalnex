@@ -259,7 +259,7 @@ class NotearsMLP(nn.Module, BaseEstimator):
             rho, alpha, h = self._dual_ascent_step(X_torch, rho, alpha, h, rho_max)
             if h <= h_tol or rho >= rho_max:
                 break
-            if n_iter == max_iter - 1 and h > h_tol:
+            if n_iter == max_iter - 1:
                 self._logger.warning(
                     "Failed to converge. Consider increasing max_iter."
                 )
@@ -386,7 +386,7 @@ class NotearsMLP(nn.Module, BaseEstimator):
 
             # sum the losses across all dist types
             for dist_type in self.dist_types:
-                loss = loss + dist_type.loss(X, X_hat)
+                loss += dist_type.loss(X, X_hat)
 
             lagrange_penalty = 0.5 * rho * h_val * h_val + alpha * h_val
             # NOTE: both the l2 and l1 regularization are NOT applied to the bias parameters
@@ -459,8 +459,7 @@ class NotearsMLP(nn.Module, BaseEstimator):
             torch.eye(d).to(self.device) + square_weight_mat / d_torch
         )  # (Yu et al. 2019)
         polynomial_mat = torch.matrix_power(characteristic_poly_mat, d - 1)
-        h = (polynomial_mat.t() * characteristic_poly_mat).sum() - d
-        return h
+        return (polynomial_mat.t() * characteristic_poly_mat).sum() - d
 
     def _l1_reg(self, n_features: int) -> torch.Tensor:
         """
